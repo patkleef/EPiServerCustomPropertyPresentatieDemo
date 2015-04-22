@@ -1,0 +1,64 @@
+﻿@using EPiServer
+@using EPiServer.ServiceLocation
+@using EPiServerCustomProperty.Business.Services
+@using EPiServerCustomProperty.Models.Pages
+
+@model EPiServerCustomProperty.Models.Pages.ContactPage
+
+@{
+    var contentRepository = ServiceLocator.Current.GetInstance<IContentRepository>();
+    var countryService = ServiceLocator.Current.GetInstance<ICountryService>();
+    var solution1List = contentRepository.GetChildren<CountryEmailAddressContainerPage>(Model.CountryEmailAddressContainerPage);
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@Model.Name</title>
+</head>
+<body>
+<div>
+    <div id="solution1">
+        <h2>Solution 1</h2>
+        <ul>
+            @foreach (var item in solution1List)
+            {
+                <li>@countryService.GetByCode(item.Country).Name - @item.EmailAddress</li>
+            }
+        </ul>
+    </div>
+
+    <div id="solution2">
+        <h2>Solution 2</h2>
+        <ul>
+            <li>Belgium - @Model.BelgiumEmailAddress</li>
+            <li>Netherlands - @Model.NetherlandsEmailAddress</li>
+            <li>Sweden - @Model.SwedenEmailAddress</li>
+        </ul>
+    </div>
+
+    <div id="solution3">
+        <h2>Solution 3</h2>
+        <ul>
+            @foreach (var item in Model.CountryEmailAddresses)
+            {
+                <li>@countryService.GetByCode(item.CountryCode).Name - @item.EmailAddress</li>
+            }
+        </ul>
+    </div>
+
+    <div id="solution4">
+        <h2>Solution 4</h2>
+        <ul>
+            @foreach (var item in Model.CountryEmailAddressesContainerPages)
+            {
+                var page = contentRepository.Get<CountryEmailAddressContainerPage>(item);
+                <li>@countryService.GetByCode(page.Country).Name - @page.EmailAddress</li>
+            }
+        </ul>
+    </div>
+</div>
+</body>
+</html>
